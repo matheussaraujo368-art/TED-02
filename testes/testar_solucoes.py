@@ -7,8 +7,10 @@ from pathlib import Path
 # Permite executar este arquivo de qualquer pasta, sem depender do diretório atual.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from hash_frequencias import chave_alfabetica, cinco_mais_frequentes, contar_frequencias
-from grafo_dijkstra import GRAFO, dijkstra
+from hash_frequencias import chave_alfabetica, cinco_mais_frequentes, contar_frequencias, obter_texto
+from grafo_dijkstra import CIDADES, CONEXOES, construir_grafo, dijkstra, localizar_cidade
+
+GRAFO = construir_grafo(CIDADES, CONEXOES)
 
 
 class TesteHash(unittest.TestCase):
@@ -30,6 +32,38 @@ class TesteHash(unittest.TestCase):
         self.assertEqual(cinco_mais_frequentes(contar_frequencias("zebra é é bola água zebra dado faca")),
                          [("é", 2), ("zebra", 2), ("água", 1), ("bola", 1), ("dado", 1)])
 
+    def test_frase_direta(self):
+        self.assertEqual(obter_texto(["--texto", "dados grafo"]), "dados grafo")
+        with self.assertRaises(ValueError):
+            obter_texto(["--texto"])
+
+
+class TesteGrafo(unittest.TestCase):
+    def test_conexoes_nos_dois_sentidos(self):
+        for cidade, vizinhos in GRAFO.items():
+            for vizinho, distancia in vizinhos.items():
+                self.assertEqual(GRAFO[vizinho][cidade], distancia)
+
+    def test_nova_conexao_vale_ida_e_volta(self):
+        grafo = construir_grafo(CIDADES, CONEXOES + [("Aurora", "Grove", 5)])
+        self.assertEqual(dijkstra(grafo, "Aurora", "Grove"), (["Aurora", "Grove"], 5))
+        self.assertEqual(dijkstra(grafo, "Grove", "Aurora"), (["Grove", "Aurora"], 5))
+
+    def test_conexoes_invalidas(self):
+        invalidas = [("A", "Z", 1), ("A", "A", 1), ("A", "B", 0), ("A", "B", -1), ("A", "B", "3")]
+        for conexao in invalidas:
+            with self.subTest(conexao=conexao), self.assertRaises(ValueError):
+                construir_grafo(["A", "B"], [conexao])
+
+    def test_conexao_repetida(self):
+        with self.assertRaises(ValueError):
+            construir_grafo(["A", "B"], [("A", "B", 1), ("B", "A", 9)])
+
+    def test_maiusculas_e_minusculas(self):
+        self.assertEqual(localizar_cidade(GRAFO, " aURORA "), "Aurora")
+        with self.assertRaises(ValueError):
+            localizar_cidade(GRAFO, "Lua")
+
 
 class TesteDijkstra(unittest.TestCase):
     def test_rota_principal(self):
@@ -40,8 +74,8 @@ class TesteDijkstra(unittest.TestCase):
         self.assertEqual(dijkstra(GRAFO, "Aurora", "Aurora"), (["Aurora"], 0))
 
     def test_sem_caminho(self):
-        grafo = {"A": {"B": 2}, "B": {"A": 2}, "C": {}}
-        self.assertEqual(dijkstra(grafo, "A", "C"), ([], math.inf))
+        grafo = construir_grafo(CIDADES + ["Ilha"], CONEXOES)
+        self.assertEqual(dijkstra(grafo, "Aurora", "Ilha"), ([], math.inf))
 
     def test_cidade_inexistente(self):
         with self.assertRaises(ValueError):

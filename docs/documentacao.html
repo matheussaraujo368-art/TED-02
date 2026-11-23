@@ -15,7 +15,7 @@ img{max-width:72%}
 figcaption{font-size:9pt;color:#444}
 </style></head><body>
 <h1>TED-02 | Tabelas Hash e Grafos</h1>
-<p><b>Disciplina:</b> Estruturas de Dados<br>
+<p><b>Disciplina:</b> Estruturas Avançadas de Dados<br>
 <b>Dupla:</b> Pedro Vitor Rocha Do Val e Matheus de Brito Araujo<br>
 <b>Turma:</b> 4º ano de Sistemas de Informação<br>
 <b>Professor:</b> Alex</p>
@@ -24,12 +24,12 @@ figcaption{font-size:9pt;color:#444}
 <p>Parte 1: ler um texto, normalizar as palavras e calcular suas frequências utilizando tabela hash. Parte 2: modelar sete cidades fictícias conectadas por distâncias positivas e calcular o menor caminho entre duas delas com o algoritmo de Dijkstra.</p>
 
 <h2>2. Parte 1 — Tabela Hash</h2>
-<p>O programa lê um arquivo TXT em UTF-8, converte o conteúdo para minúsculas com <code>casefold()</code>, identifica as palavras por expressão regular e atualiza um dicionário Python: <code>frequencias[palavra] = frequencias.get(palavra, 0) + 1</code>. A saída mostra todas as frequências em ordem alfabética e um ranking das cinco palavras mais frequentes, com desempate alfabético. A ordenação ignora acentos.</p>
+<p>O programa recebe um arquivo TXT em UTF-8 ou uma frase (<code>--texto</code>), converte o conteúdo para minúsculas com <code>casefold()</code>, identifica as palavras por expressão regular e atualiza um dicionário Python: <code>frequencias[palavra] = frequencias.get(palavra, 0) + 1</code>. A saída mostra todas as frequências em ordem alfabética e um ranking das cinco palavras mais frequentes, com desempate alfabético. A ordenação ignora acentos.</p>
 <p>O conjunto de dados é um texto sobre estruturas de dados com 1.097 palavras, das quais 465 são distintas. As cinco mais frequentes são: o (54), a (53), de (40), e (31) e uma (24).</p>
 <p>A consulta ou inserção no dicionário tem custo médio O(1) por palavra; assim, contar n palavras leva O(n) em média. No pior caso, com muitas colisões, uma operação pode chegar a O(k), em que k é o número de palavras distintas. A ordenação para exibição custa O(k log k), e o armazenamento utiliza O(k) de espaço.</p>
 
 <h2>3. Parte 2 — Grafo e lista de adjacência</h2>
-<p>O cenário usa sete localidades <b>fictícias</b>: Aurora, Brisa, Cedro, Duna, Estrela, Farol e Grove. Cada conexão é bidirecional e tem peso positivo hipotético em quilômetros. A lista de adjacência é um dicionário no qual cada cidade aponta para um dicionário de vizinhos e distâncias.</p>
+<p>O cenário usa sete localidades <b>fictícias</b>: Aurora, Brisa, Cedro, Duna, Estrela, Farol e Grove. Cada conexão é bidirecional e tem peso positivo hipotético em quilômetros. A lista de adjacência é um dicionário no qual cada cidade aponta para um dicionário de vizinhos e distâncias. Cada estrada é declarada uma única vez em <code>CONEXOES</code>, e a função <code>construir_grafo()</code> registra a ida e a volta.</p>
 <table><tr><th>Cidade A</th><th>Cidade B</th><th>Distância (km)</th></tr>
 <tr><td>Aurora</td><td>Brisa</td><td>4</td></tr>
 <tr><td>Aurora</td><td>Cedro</td><td>3</td></tr>
@@ -57,14 +57,16 @@ figcaption{font-size:9pt;color:#444}
 <p>Há um segundo caminho de 16 km, por Aurora → Cedro → Brisa (3 + 1 = 4 km). O programa mantém o primeiro encontrado, pois só troca uma distância quando a nova é estritamente menor. Ambos são respostas corretas.</p>
 
 <h2>5. Testes, validação e decisões</h2>
-<p>Há dez testes automatizados: exemplo do enunciado, normalização de maiúsculas e pontuação, texto vazio, ordem alfabética com acentos, ranking com empate, rota principal, origem igual ao destino, cidades desconectadas, cidade inexistente e peso inválido. Todos passaram. As saídas completas estão na pasta <code>evidencias/</code>.</p>
+<p>Há dezesseis testes automatizados. Na tabela hash: exemplo do enunciado, normalização, texto vazio, ordem alfabética com acentos, ranking com empate e frase direta. No grafo: conexões nos dois sentidos, inclusão de nova conexão, conexões inválidas ou repetidas e nomes em maiúsculas ou minúsculas. No Dijkstra: rota principal, origem igual ao destino, ausência de caminho, cidade inexistente e peso inválido. Todos passaram. As saídas completas estão na pasta <code>evidencias/</code>.</p>
+<figure><img src="../evidencias/hash_exemplo.png" alt="Terminal: exemplo do enunciado"><figcaption>Execução de hash_frequencias.py com o exemplo do enunciado.</figcaption></figure>
 <figure><img src="../evidencias/grafo.png" alt="Terminal: execução do grafo"><figcaption>Execução de grafo_dijkstra.py com duas rotas e um caso de erro.</figcaption></figure>
-<figure><img src="../evidencias/testes.png" alt="Terminal: dez testes aprovados"><figcaption>Execução dos testes automatizados.</figcaption></figure>
+<figure><img src="../evidencias/testes.png" alt="Terminal: dezesseis testes aprovados"><figcaption>Execução dos testes automatizados.</figcaption></figure>
 <p>A principal decisão foi empregar <code>dict</code> para a tabela hash e dicionário de dicionários para a lista de adjacência, permitindo leitura direta das conexões. A fila de prioridade evita procurar linearmente o menor valor a cada iteração. Como limitações, o exemplo utiliza pesos hipotéticos e a normalização não remove palavras comuns, como artigos e preposições. Apenas a biblioteca padrão de Python é utilizada.</p>
 
 <h2>6. Dificuldades e pontos de atenção</h2>
 <p><b>Acentos na ordenação:</b> a ordenação padrão compara códigos Unicode e colocava “água” e “única” depois de “zero”. A solução foi ordenar por uma versão da palavra sem acentos, mantendo a original na exibição.</p>
 <p><b>Texto de entrada:</b> um texto formado por um parágrafo repetido deixava quase todas as palavras empatadas. Ele foi substituído por um texto sem repetição de parágrafos, com frequências variadas.</p>
 <p><b>Execução dos testes:</b> os testes só funcionavam com o comando executado na pasta raiz. O arquivo passou a localizar os programas pelo próprio caminho.</p>
+<p><b>Conexões de mão única:</b> quando a estrada era escrita separadamente em cada cidade, esquecer um dos lados deixava a volta com distância diferente, sem aviso. Declarar a estrada uma vez e gerar os dois sentidos eliminou o problema.</p>
 <p><b>Caminhos empatados:</b> a menor distância é única, mas o percurso que a alcança pode não ser.</p>
 </body></html>
