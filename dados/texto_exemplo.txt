@@ -1,0 +1,37 @@
+Estruturas de dados no cotidiano
+
+Quando alguém procura um contato no celular, consulta o saldo do banco ou pede a melhor rota até o trabalho, existe uma estrutura de dados trabalhando em silêncio. O usuário enxerga apenas a resposta na tela, mas o programa precisou guardar as informações de um jeito que permitisse encontrá-las depois. A escolha desse jeito de guardar é uma das decisões mais importantes de um projeto, porque ela define quais operações serão rápidas e quais serão lentas.
+
+Uma biblioteca ajuda a entender o problema. Imagine milhares de livros empilhados no chão, sem nenhuma ordem. Para achar um título, seria preciso olhar um livro de cada vez, até dar sorte. Se os livros estivessem em ordem alfabética, a busca ficaria bem mais curta, pois bastaria abrir a estante no meio e descartar metade a cada passo. E se houvesse um funcionário capaz de dizer, só de ouvir o título, o número exato da prateleira, a procura seria quase imediata. Esse funcionário faz o papel de uma função hash.
+
+A tabela hash
+
+Uma tabela hash guarda pares formados por chave e valor. A chave passa por uma função que devolve um número, e esse número indica a posição em que o valor deve ficar. Como o cálculo da posição não depende da quantidade de itens guardados, a consulta costuma levar o mesmo tempo em uma tabela com dez itens ou com dez milhões. Por isso dizemos que o custo médio de uma busca é constante.
+
+Existe, porém, um detalhe. Duas chaves diferentes podem receber a mesma posição, e esse encontro recebe o nome de colisão. Há várias maneiras de tratar uma colisão. Em uma delas, cada posição guarda uma pequena lista, e as chaves que colidem ficam juntas nessa lista. Em outra, a tabela procura a próxima posição livre seguindo uma regra fixa. A linguagem Python adota a segunda ideia em seus dicionários. Se a função hash espalha bem as chaves e se a tabela cresce antes de ficar cheia, as colisões são poucas e o desempenho continua bom. No pior caso, quando quase todas as chaves colidem, a busca pode precisar visitar todos os itens.
+
+Contar palavras é um exemplo clássico do uso de uma tabela hash. O programa lê o texto, separa as palavras e usa cada palavra como chave. Se a palavra ainda não apareceu, a tabela recebe uma nova entrada com valor um. Se ela já apareceu, o valor aumenta. No final da leitura, a tabela contém a frequência de todas as palavras, e o texto foi percorrido uma única vez. Com uma lista simples, o programa teria de procurar a palavra do começo ao fim a cada leitura, e um livro inteiro levaria muito mais tempo.
+
+Antes da contagem é preciso preparar o texto. Para uma pessoa, Casa e casa são a mesma palavra, mas para o computador são sequências diferentes de caracteres. O mesmo vale para casa seguida de vírgula ou de ponto. Por esse motivo o programa transforma as letras em minúsculas e ignora a pontuação. Os acentos são preservados, pois em português eles mudam o sentido: avó e avô são pessoas diferentes, assim como sábia, sabia e sabiá não significam a mesma coisa.
+
+O resultado da contagem costuma surpreender quem espera ver apenas os assuntos do texto. As primeiras posições quase sempre pertencem a artigos, preposições e conjunções, que aparecem em qualquer frase. Um sistema de busca normalmente remove esses termos para destacar o conteúdo. Neste trabalho eles foram mantidos, porque o objetivo é observar a tabela hash em funcionamento, e não interpretar o texto.
+
+O grafo
+
+Nem toda informação cabe bem em uma tabela. Quando o que interessa é a ligação entre as coisas, o grafo é a estrutura mais natural. Um grafo é formado por vértices e arestas. Os vértices representam os elementos, como cidades, pessoas ou computadores. As arestas representam as ligações, como estradas, amizades ou cabos de rede. Se cada aresta possui um número associado, o grafo é ponderado, e esse número pode indicar distância, tempo, preço ou qualquer outra medida.
+
+Há duas formas comuns de guardar um grafo na memória. A matriz de adjacência reserva um espaço para cada par de vértices, exista ou não uma ligação entre eles. Ela responde depressa se dois vértices são vizinhos, mas desperdiça memória quando há poucas arestas. A lista de adjacência guarda, para cada vértice, somente os vizinhos que ele realmente possui. Mapas de estradas têm poucas ligações por cidade, e assim a lista costuma ser a melhor opção.
+
+Com o mapa na memória surge a pergunta que todo motorista conhece: qual é o caminho mais curto? Testar todas as rotas possíveis parece simples, mas a quantidade de rotas cresce de forma assustadora à medida que o mapa aumenta. Em 1959, o cientista holandês Edsger Dijkstra publicou um método que evita esse desperdício.
+
+O algoritmo de Dijkstra
+
+A ideia é parecida com uma mancha de água que se espalha a partir da cidade de origem. A origem recebe distância zero, e todas as outras cidades começam com distância infinita, já que ninguém sabe ainda como chegar até elas. A cada passo, o algoritmo escolhe a cidade mais próxima que ainda não foi resolvida e examina os seus vizinhos. Se passar por essa cidade oferece um caminho menor até um vizinho, a distância do vizinho é corrigida e o programa anota de onde veio. Essa correção é chamada de relaxamento.
+
+Para escolher depressa a cidade mais próxima, usa-se uma fila de prioridade. Em uma fila comum, o primeiro a chegar é o primeiro a sair. Na fila de prioridade, sai primeiro o elemento de menor valor, não importa quando entrou. Ao terminar, o programa segue as anotações do destino até a origem e monta o percurso de trás para frente.
+
+O método exige que nenhum peso seja negativo. Quando uma cidade sai da fila, o algoritmo considera a sua distância definitiva, e um trecho com peso negativo poderia revelar mais tarde um caminho melhor. Também pode haver empate, isto é, dois percursos diferentes com o mesmo comprimento. Nessa situação qualquer um deles é uma resposta correta, e o programa fica com o que encontrou primeiro.
+
+Conclusão
+
+A tabela hash e o grafo resolvem problemas diferentes, mas trabalham muito bem juntos. Neste projeto, o próprio grafo é guardado em dicionários, que são tabelas hash: o nome da cidade é a chave, e os vizinhos são o valor. Conhecer as vantagens e os limites de cada estrutura permite escolher com segurança, explicar a escolha e prever como o programa vai se comportar quando os dados crescerem.

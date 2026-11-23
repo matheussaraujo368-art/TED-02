@@ -1,0 +1,5 @@
+=== PARTE 2: GRAFOS E DIJKSTRA ===
+Cidades disponíveis: Aurora, Brisa, Cedro, Duna, Estrela, Farol, Grove
+Origem: Aurora | Destino: Grove
+Menor caminho: Aurora -> Brisa -> Duna -> Estrela -> Farol -> Grove
+Distância total: 16 km

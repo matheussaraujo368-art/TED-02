@@ -1,0 +1,15 @@
+test_cidade_inexistente (testar_solucoes.TesteDijkstra.test_cidade_inexistente) ... ok
+test_mesma_cidade (testar_solucoes.TesteDijkstra.test_mesma_cidade) ... ok
+test_peso_invalido (testar_solucoes.TesteDijkstra.test_peso_invalido) ... ok
+test_rota_principal (testar_solucoes.TesteDijkstra.test_rota_principal) ... ok
+test_sem_caminho (testar_solucoes.TesteDijkstra.test_sem_caminho) ... ok
+test_exemplo_enunciado (testar_solucoes.TesteHash.test_exemplo_enunciado) ... ok
+test_normalizacao (testar_solucoes.TesteHash.test_normalizacao) ... ok
+test_ordem_alfabetica_com_acentos (testar_solucoes.TesteHash.test_ordem_alfabetica_com_acentos) ... ok
+test_ranking_com_empate (testar_solucoes.TesteHash.test_ranking_com_empate) ... ok
+test_texto_vazio (testar_solucoes.TesteHash.test_texto_vazio) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.001s
+
+OK
