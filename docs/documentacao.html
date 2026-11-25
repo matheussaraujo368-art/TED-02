@@ -63,10 +63,12 @@ figcaption{font-size:9pt;color:#444}
 <figure><img src="../evidencias/testes.png" alt="Terminal: dezesseis testes aprovados"><figcaption>Execução dos testes automatizados.</figcaption></figure>
 <p>A principal decisão foi empregar <code>dict</code> para a tabela hash e dicionário de dicionários para a lista de adjacência, permitindo leitura direta das conexões. A fila de prioridade evita procurar linearmente o menor valor a cada iteração. Como limitações, o exemplo utiliza pesos hipotéticos e a normalização não remove palavras comuns, como artigos e preposições. Apenas a biblioteca padrão de Python é utilizada.</p>
 
-<h2>6. Dificuldades e pontos de atenção</h2>
-<p><b>Acentos na ordenação:</b> a ordenação padrão compara códigos Unicode e colocava “água” e “única” depois de “zero”. A solução foi ordenar por uma versão da palavra sem acentos, mantendo a original na exibição.</p>
-<p><b>Texto de entrada:</b> um texto formado por um parágrafo repetido deixava quase todas as palavras empatadas. Ele foi substituído por um texto sem repetição de parágrafos, com frequências variadas.</p>
-<p><b>Execução dos testes:</b> os testes só funcionavam com o comando executado na pasta raiz. O arquivo passou a localizar os programas pelo próprio caminho.</p>
-<p><b>Conexões de mão única:</b> quando a estrada era escrita separadamente em cada cidade, esquecer um dos lados deixava a volta com distância diferente, sem aviso. Declarar a estrada uma vez e gerar os dois sentidos eliminou o problema.</p>
-<p><b>Caminhos empatados:</b> a menor distância é única, mas o percurso que a alcança pode não ser.</p>
+<h2>6. Dificuldades encontradas e decisões de implementação</h2>
+<p>As dificuldades abaixo apareceram durante os testes e a revisão do projeto. Para cada uma, é apresentada a solução adotada.</p>
+<p><b>Palavras com acento fora de ordem.</b> A ordenação padrão do Python compara códigos Unicode, e por isso “água” e “única” apareciam depois de “zero”. A função <code>chave_alfabetica()</code> passou a ordenar por uma versão sem acentos, mantendo a palavra original na contagem e na exibição.</p>
+<p><b>Texto de exemplo pouco representativo.</b> O primeiro texto repetia um único parágrafo, e 48 das 50 palavras distintas ficavam empatadas com 22 ocorrências. Ele foi trocado por um texto sem parágrafos repetidos, com 465 palavras distintas, no qual o ranking passou a ter significado.</p>
+<p><b>Estradas de mão única por engano.</b> Na primeira versão, cada estrada era escrita nas duas cidades. Ao incluir uma conexão em apenas um lado, a ida ficou com 5 km e a volta continuou com 16 km, sem aviso. A decisão foi declarar cada estrada uma vez em <code>CONEXOES</code> e gerar os dois sentidos em <code>construir_grafo()</code>, que também recusa conexões repetidas ou com cidades desconhecidas.</p>
+<p><b>Dois caminhos com a mesma distância.</b> Entre Aurora e Grove existem duas rotas de 16 km. A menor distância é única, mas o percurso pode não ser. A comparação usa “menor que” (<code>&lt;</code>), e assim o programa mantém a primeira rota encontrada.</p>
+<p><b>Registros antigos na fila de prioridade.</b> O <code>heapq</code> não atualiza um valor já inserido. Quando surge um caminho menor até uma cidade, um novo registro é acrescentado, e o antigo é ignorado ao sair da fila, pois sua distância é maior que a já conhecida.</p>
+<p><b>Entradas do usuário.</b> Nomes como “aurora” eram recusados por causa da letra minúscula, e os testes não rodavam quando o arquivo era executado diretamente. A busca de cidades deixou de diferenciar maiúsculas de minúsculas, e os testes passaram a localizar os programas pelo próprio caminho.</p>
 </body></html>
